@@ -109,8 +109,7 @@ pub fn Parser(comptime options: TemplateOptions) type {
             self.beginLevel(0, self.default_delimiters, render) catch |err| switch (err) {
                 AbortError.ParserAbortedError => return false,
                 else => {
-                    const Error = LoadError || RenderError(@TypeOf(render));
-                    return @errSetCast(Error, err);
+                    return @errSetCast(err);
                 },
             };
 
@@ -173,7 +172,7 @@ pub fn Parser(comptime options: TemplateOptions) type {
                             return self.abort(ParseError.ClosingTagMismatch, text_part);
                         }
 
-                        open_node.children_count = @intCast(u32, nodes.items.len - initial_index);
+                        open_node.children_count = @as(u32, @intCast(nodes.items.len - initial_index));
 
                         if (allow_lambdas and open_node.text_part.part_type == .section) {
                             if (try self.inner_state.text_scanner.endBookmark(nodes)) |bookmark| {
@@ -190,7 +189,7 @@ pub fn Parser(comptime options: TemplateOptions) type {
 
                 // Adding
                 var current_node: *Node = current_node: {
-                    const index = @intCast(u32, nodes.items.len);
+                    const index = @as(u32, @intCast(nodes.items.len));
                     const node = Node{
                         .index = index,
                         .identifier = try self.parseIdentifier(text_part),

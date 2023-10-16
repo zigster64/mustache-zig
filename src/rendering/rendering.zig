@@ -1695,14 +1695,14 @@ const tests = struct {
                 const expected = "";
 
                 {
-                    var data = .{ .@"null" = null };
+                    var data = .{ .null = null };
 
                     try expectRender(template_text, data, expected);
                 }
 
                 {
-                    const Data = struct { @"null": ?[]i32 };
-                    var data = Data{ .@"null" = null };
+                    const Data = struct { null: ?[]i32 };
+                    var data = Data{ .null = null };
 
                     try expectRender(template_text, data, expected);
                 }
@@ -2346,7 +2346,7 @@ const tests = struct {
             }
 
             // Standalone tags should not require a newline to precede them.
-            test "Standalone Line Endings" {
+            test "Standalone Line Endings no CR" {
                 const template_text = "  {{#boolean}}\n#{{/boolean}}\n/";
                 const expected = "#\n/";
 
@@ -2402,14 +2402,14 @@ const tests = struct {
 
                 {
                     // comptime
-                    var data = .{ .@"null" = null };
+                    var data = .{ .null = null };
                     try expectRender(template_text, data, expected);
                 }
 
                 {
                     // runtime
-                    const Data = struct { @"null": ?u0 };
-                    var data = Data{ .@"null" = null };
+                    const Data = struct { null: ?u0 };
+                    var data = Data{ .null = null };
                     try expectRender(template_text, data, expected);
                 }
             }
@@ -3296,7 +3296,7 @@ const tests = struct {
                     var text = try ctx.renderAlloc(testing.allocator, ctx.inner_text);
                     defer testing.allocator.free(text);
 
-                    for (text) |char, i| {
+                    for (text, 0..) |char, i| {
                         text[i] = std.ascii.toLower(char);
                     }
 
@@ -3318,7 +3318,7 @@ const tests = struct {
                     var text = try ctx.renderAlloc(testing.allocator, ctx.inner_text);
                     defer testing.allocator.free(text);
 
-                    for (text) |char, i| {
+                    for (text, 0..) |char, i| {
                         text[i] = std.ascii.toLower(char);
                     }
 
@@ -3332,7 +3332,7 @@ const tests = struct {
                     const expected = "name=phill";
                     try testing.expectEqualStrings(expected, text);
 
-                    for (text) |char, i| {
+                    for (text, 0..) |char, i| {
                         text[i] = std.ascii.toUpper(char);
                     }
 
@@ -4277,7 +4277,7 @@ const tests = struct {
             comptime var comptime_partials: [partials.len]PartialTuple = undefined;
 
             comptime {
-                inline for (partials) |item, index| {
+                inline for (partials, 0..) |item, index| {
                     var partial_template = mustache.parseComptime(item[1], .{}, .{});
                     comptime_partials[index] = .{ item[0], partial_template };
                 }

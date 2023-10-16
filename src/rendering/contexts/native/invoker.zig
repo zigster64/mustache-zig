@@ -209,7 +209,7 @@ pub fn Invoker(comptime Writer: type, comptime PartialsMap: type, comptime optio
                         .Struct => |info| {
                             if (info.is_tuple) {
                                 const derref = comptime trait.isSingleItemPtr(@TypeOf(data));
-                                inline for (info.fields) |_, i| {
+                                inline for (info.fields, 0..) |_, i| {
                                     if (index == i) {
                                         return Result{
                                             .field = try action_fn(
@@ -393,7 +393,7 @@ pub fn Invoker(comptime Writer: type, comptime PartialsMap: type, comptime optio
             // Errors are intentionally ignored on lambda calls, interpolating empty strings
             value.invoke(lambda_context) catch |e| {
                 if (isOnErrorSet(Error, e)) {
-                    return @errSetCast(Error, e);
+                    return @as(Error, @errSetCast(e));
                 }
             };
         }
@@ -407,8 +407,8 @@ fn isOnErrorSet(comptime Error: type, value: anytype) bool {
         .ErrorSet => |info| if (info) |errors| {
             if (@typeInfo(@TypeOf(value)) == .ErrorSet) {
                 inline for (errors) |item| {
-                    const int_value = @errorToInt(@field(Error, item.name));
-                    if (int_value == @errorToInt(value)) return true;
+                    const int_value = @intFromError(@field(Error, item.name));
+                    if (int_value == @intFromError(value)) return true;
                 }
             }
         },
