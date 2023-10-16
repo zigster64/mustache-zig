@@ -1,4 +1,7 @@
 # MUSTACHE-ZIG
+
+Modernized by Zigster64, to get this working with Zig 0.11.0 / 0.12.dev ... with module support
+
 # [{{mustache}}](https://mustache.github.io/) templates for [Zig](https://ziglang.org/).
 
 [![made with Zig](https://img.shields.io/badge/made%20with%20%E2%9D%A4%20-Zig-orange)](https://ziglang.org/)
